@@ -4,6 +4,7 @@ import Feed from "./feed"
 import Contador from "./contador"
 import NovoPost from "./NovoPost"
 import FeedFiltravel from "./FeedFiltravel"
+import BootstrapTest from "./BootstrapTest"
 // src/App.jsx
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Contador/>
       <NovoPost/>
       <FeedFiltravel/>
+      <BootstrapTest/>
     </>
   )
 }
