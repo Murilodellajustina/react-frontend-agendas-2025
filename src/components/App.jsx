@@ -2,7 +2,8 @@ import Perfil from "./Perfil"
 import Saudacao from "./saudacao"
 import Feed from "./feed"
 import Contador from "./contador"
-
+import NovoPost from "./NovoPost"
+import FeedFiltravel from "./FeedFiltravel"
 // src/App.jsx
 const App = () => {
   return (
@@ -12,6 +13,8 @@ const App = () => {
       <Saudacao nome = "Ester" />
       <Feed/>
       <Contador/>
+      <NovoPost/>
+      <FeedFiltravel/>
     </>
   )
 }
