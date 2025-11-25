@@ -7,15 +7,23 @@ export default function ListarPacientes() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const controller = new AbortController();
 
     if (!token) {
       window.location.href = "/";
       return;
     }
 
-    api.get("/paciente")
+    api.get("/paciente", { signal: controller.signal })
       .then((res) => setPacientes(res.data))
-      .catch((err) => console.error("Erro ao buscar pacientes:", err));
+      .catch((err) => {
+        if (err.name === "CanceledError") return; 
+        console.error("Erro ao buscar pacientes:", err);
+      });
+
+  return () => {
+      controller.abort();
+    };
   }, []);
 
   return (

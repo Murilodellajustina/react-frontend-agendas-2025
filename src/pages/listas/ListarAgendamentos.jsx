@@ -7,54 +7,62 @@ export default function ListarAgendamentos() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const controller = new AbortController();
 
     if (!token) {
       window.location.href = "/";
       return;
     }
 
-    api.get("/agendamento")
+    api.get("/agendamento", { signal: controller.signal })
       .then((res) => setAgendamentos(res.data))
-      .catch((err) => console.error("Erro ao buscar agendamentos:", err));
+      .catch((err) => {
+        if (err.name === "CanceledError") return;
+        console.error("Erro ao buscar clinicas:", err);
+      });
+
+    return () => {
+      controller.abort(); 
+    };
   }, []);
 
   return (
     <Layout>
-    <div className="container mt-5">
-      <h2 className="mb-4 text-primary">Lista de Agendamentos</h2>
+      <div className="container mt-5">
+        <h2 className="mb-4 text-primary">Lista de Agendamentos</h2>
 
-      <table className="table table-striped table-bordered shadow">
-        <thead className="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>Exame / Consulta</th>
-            <th>Médico</th>
-            <th>Paciente</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {agendamentos.length === 0 ? (
+        <table className="table table-striped table-bordered shadow">
+          <thead className="table-dark">
             <tr>
-              <td colSpan="5" className="text-center">
-                Carregando...
-              </td>
+              <th>ID</th>
+              <th>Exame / Consulta</th>
+              <th>Médico</th>
+              <th>Paciente</th>
+              <th>Estado</th>
             </tr>
-          ) : (
-            agendamentos.map((ag) => (
-              <tr key={ag.id}>
-                <td>{ag.id}</td>
-                <td>{ag.exameouconsulta}</td>
-                <td>{ag.medico}</td>
-                <td>{ag.paciente_nome}</td>
-                <td>{ag.estado}</td>
+          </thead>
+
+          <tbody>
+            {agendamentos.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="text-center">
+                  Carregando...
+                </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
-  </Layout>
+            ) : (
+              agendamentos.map((ag) => (
+                <tr key={ag.id}>
+                  <td>{ag.id}</td>
+                  <td>{ag.exameouconsulta}</td>
+                  <td>{ag.medico}</td>
+                  <td>{ag.paciente_nome}</td>
+                  <td>{ag.estado}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </Layout>
   );
 }

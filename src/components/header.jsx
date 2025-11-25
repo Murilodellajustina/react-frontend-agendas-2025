@@ -1,15 +1,27 @@
 import logo from "../Imagens/logo.png";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Header() {
+  const [papel, setPapel] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      setPapel(payload.papel);
+    }
+  }, []);
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow">
       <div className="container">
 
-        <a className="navbar-brand d-flex align-items-center" href="/">
+        <a className="navbar-brand d-flex align-items-center">
           <img
             src={logo}
             alt="Logo"
-            style={{ width: "200px", height: "70px", borderRadius: "30px" }}
+            style={{ width: "200px", height: "50px", borderRadius: "30px" }}
             className="me-2"
           />
         </a>
@@ -26,19 +38,28 @@ export default function Header() {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <a className="nav-link" href="/PaginaInicialAdm">Inicio</a>
+              <Link className="nav-link text-white" to="/PaginaInicialAdm">Inicio</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/ListarAgendamentos">Agendamentos</a>
+              <Link className="nav-link text-white" to="/ListarAgendamentos">Agendamentos</Link>
             </li>
+            {papel === 0 && (
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/ListarPacientes">Pacientes</Link>
+              </li>
+            )}
+            {papel === 1 && (
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/ListarPacientes">Pacientes</Link>
+              </li>
+            )}
+            {papel === 0 && (
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/ListarUsuarios">Usuários</Link>
+              </li>
+            )}
             <li className="nav-item">
-              <a className="nav-link" href="/ListarPacientes">Pacientes</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/ListarUsuarios">Usuarios</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/">Login</a>
+              <Link className="nav-link text-white" to="/">Login</Link>
             </li>
           </ul>
         </div>

@@ -7,15 +7,24 @@ export default function ListarClinicas() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const controller = new AbortController();
 
     if (!token) {
       window.location.href = "/";
       return;
     }
 
-    api.get("/clinica")
+    api.get("/clinica", { signal: controller.signal })
       .then((res) => setClinicas(res.data))
-      .catch((err) => console.error("Erro ao buscar clinicas:", err));
+      .catch((err) => {
+        if (err.name === "CanceledError") return; 
+        console.error("Erro ao buscar clinicas:", err);
+      });
+
+
+  return () => {
+      controller.abort(); // 👉 cancela a requisição ao desmontar o componente
+    };
   }, []);
 
   return (
