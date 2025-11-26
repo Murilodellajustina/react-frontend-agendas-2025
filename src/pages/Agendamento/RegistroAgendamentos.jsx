@@ -4,7 +4,7 @@ import Layout from "../../components/Layout";
 
 export default function CriarAgendamento() {
   const [clinicas, setClinicas] = useState([]);
-  const [user, setUser] = useState(null); // <-- guarda payload decodificado
+  const [user, setUser] = useState(null);
 
   const [data_agenda, setData_agenda] = useState("");
   const [exameOuConsulta, setExameOuConsulta] = useState("");
@@ -15,30 +15,29 @@ export default function CriarAgendamento() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const controller = new AbortController();
+
     if (!token) {
       window.location.href = "/";
       return;
     }
-
     const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.papel !== 0 && payload.papel !== 2) {
-      alert("Acesso negado! Apenas administradores ou clínicas podem acessar esta página.");
+    if (payload.papel !== 0 && payload.papel !== 1 && payload.papel !== 2) {
+      alert("Acesso negado! Apenas administradores, clínicas ou pacientes podem acessar esta página.");
       window.location.href = "/PaginaInicialAdm";
       return;
     }
 
-    setUser(payload);
-
-    // carregar clínicas com AbortController
-    const controller = new AbortController();
-    api.get("/clinica", { signal: controller.signal })
-      .then(res => setClinicas(res.data))
-      .catch(err => {
-        if (err.name === "CanceledError" || err.name === "AbortError") return;
-        console.error("Erro ao carregar clínicas:", err);
+    api.get("/agendamento:id", { signal: controller.signal })
+      .then((res) => setAgendamentos(res.data))
+      .catch((err) => {
+        if (err.name === "CanceledError") return;
+        console.error("Erro ao buscar clinicas:", err);
       });
 
-    return () => controller.abort();
+    return () => {
+      controller.abort();
+    };
   }, []);
 
   async function handleSubmit(e) {
@@ -60,8 +59,8 @@ export default function CriarAgendamento() {
       // montar body com os nomes que o backend espera
       const body = {
         usuarios_id: Number(user.id),
-        Paciente_id: null,                 // backend espera campo Paciente_id (observe maiúscula P)
-        ExameOuConsulta: exameOuConsulta,  // observe a chave com essa caixa
+        Paciente_id: null,
+        ExameOuConsulta: exameOuConsulta,
         Medico: medico,
         Clinica_id: Number(clinica_id),
         estado: estado,
@@ -79,7 +78,6 @@ export default function CriarAgendamento() {
       setTimeout(() => (window.location.href = "/ListarAgendamentos"), 1200);
     } catch (err) {
       console.error("Erro ao criar agendamento:", err);
-      // mostra mensagem do servidor quando existir
       const servidorMsg = err?.response?.data?.erro || err?.response?.data || err.message;
       setMsg(`Erro ao criar agendamento: ${servidorMsg}`);
     }

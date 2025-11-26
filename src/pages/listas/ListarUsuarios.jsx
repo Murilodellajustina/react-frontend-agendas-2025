@@ -14,6 +14,14 @@ export default function ListarUsuarios() {
       return;
     }
 
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (payload.papel !== 0 ) {
+      alert("Acesso negado! Apenas administradores podem acessar esta página.");
+      window.location.href = "/PaginaInicialAdm";
+      return;
+    }
+
+
     api.get("/usuarios", { signal: controller.signal })
       .then((res) => setUsuarios(res.data))
       .catch((err) => {
@@ -54,8 +62,8 @@ export default function ListarUsuarios() {
                     {usu.papel === 0
                       ? "Administrador"
                       : usu.papel === 1
-                      ? "Funcionário da Saúde"
-                      : "Clínica"}
+                        ? "Funcionário da Saúde"
+                        : "Clínica"}
                   </td>
                 </tr>
               ))

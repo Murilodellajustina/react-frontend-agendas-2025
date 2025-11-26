@@ -14,6 +14,14 @@ export default function ListarClinicas() {
       return;
     }
 
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (payload.papel !== 0 && payload.papel !== 2) {
+      alert("Acesso negado! Apenas administradores ou clínicas podem acessar esta página.");
+      window.location.href = "/PaginaInicialAdm";
+      return;
+    }
+
+
     api.get("/clinica", { signal: controller.signal })
       .then((res) => setClinicas(res.data))
       .catch((err) => {
@@ -23,7 +31,7 @@ export default function ListarClinicas() {
 
 
   return () => {
-      controller.abort(); // 👉 cancela a requisição ao desmontar o componente
+      controller.abort(); 
     };
   }, []);
 

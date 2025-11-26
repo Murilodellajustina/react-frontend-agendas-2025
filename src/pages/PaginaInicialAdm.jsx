@@ -9,22 +9,33 @@ import { Link } from "react-router-dom";
 
 export default function PaginaInicialAdm() {
   const [nome, setNome] = useState("");
+  const [papel, setPapel] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
+    if (!token) {
+      window.location.href = "/";
+      return;
+    }
 
     const payload = JSON.parse(atob(token.split(".")[1]));
-    const idUsuario = payload.id;
 
-    api.get(`/usuarios/${idUsuario}`)
+    if (payload.papel !== 0 && payload.papel !== 1 && payload.papel !== 2) {
+      alert("Acesso negado! Apenas administradores, funcionários da saúde e clinicas podem acessar esta página.");
+      window.location.href = "/";
+      return;
+    }
+
+
+    setPapel(payload.papel);
+
+    api.get(`/usuarios/${payload.id}`)
       .then((res) => setNome(res.data.nome))
-      .catch((err) => console.error("Erro ao buscar usuario:", err));
+      .catch((err) => console.error("Erro ao buscar usuário:", err));
   }, []);
 
   return (
     <Layout>
-      {/* Nome do usuário */}
       <div className="d-flex justify-content-center p-4">
         <h3>Seja bem vindo, {nome}</h3>
       </div>
@@ -32,13 +43,46 @@ export default function PaginaInicialAdm() {
       <div className="d-flex justify-content-between align-items-start p-4 gap-4 flex-wrap">
 
         <div className="d-flex flex-column gap-3" style={{ minWidth: "250px" }}>
-          <Button as={Link} to="/RegistroAgendamento" variant="primary">
-            Criar Agendamento
-          </Button>
+          {papel === 0 && (
+            <Button as={Link} to="/RegistroAgendamento" variant="primary">
+              Criar Agendamento
+            </Button>
+          )}
+          {papel === 2 && (
+            <Button as={Link} to="/RegistroAgendamento" variant="primary">
+              Criar Agendamento
+            </Button>
+          )}
 
-          <Button as={Link} to="/RegistroUsuarios" variant="primary">
-            Criar Usuário
-          </Button>
+          {papel === 0 && (
+            <Button as={Link} to="/RegistroUsuarios" variant="primary">
+              Criar Usuário
+            </Button>
+          )}
+
+          {papel === 0 && (
+            <Button as={Link} to="/RegistroClinica" variant="primary">
+              Criar Clinica
+            </Button>
+          )}
+
+          {papel === 2 && (
+            <Button as={Link} to="/RegistroClinica" variant="primary">
+              Criar Clinica
+            </Button>
+          )}
+
+          {papel === 0 && (
+            <Button as={Link} to="/RegistroPaciente" variant="primary">
+              Criar Paciente
+            </Button>
+          )}
+
+          {papel === 1 && (
+            <Button as={Link} to="/RegistroPaciente" variant="primary">
+              Criar Paciente
+            </Button>
+          )}
         </div>
 
         <div style={{ width: "500px", maxWidth: "100%" }}>
@@ -64,6 +108,6 @@ export default function PaginaInicialAdm() {
         </div>
 
       </div>
-    </Layout>
+    </Layout >
   );
 }
