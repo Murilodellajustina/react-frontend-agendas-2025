@@ -39,6 +39,7 @@ export default function ListarAgendamentos() {
               <th>Médico</th>
               <th>Paciente</th>
               <th>Estado</th>
+              <th>Data Agenda</th>
             </tr>
           </thead>
 
@@ -57,6 +58,7 @@ export default function ListarAgendamentos() {
                   <td>{ag.medico}</td>
                   <td>{ag.paciente_nome}</td>
                   <td>{ag.estado}</td>
+                  <td>{ag.data_agenda}</td>
                 </tr>
               ))
             )}

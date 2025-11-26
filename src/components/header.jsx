@@ -59,7 +59,16 @@ export default function Header() {
               </li>
             )}
             <li className="nav-item">
-              <Link className="nav-link text-white" to="/">Login</Link>
+              <a
+                className="nav-link text-white"
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  window.location.href = "/";
+                }}
+              >
+                Logout
+              </a>
             </li>
           </ul>
         </div>
