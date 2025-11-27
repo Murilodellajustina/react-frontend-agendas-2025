@@ -1,18 +1,22 @@
 import logo from "../Imagens/logo.png";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { api } from "../Services/Api";
 
 export default function Header() {
   const [papel, setPapel] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+useEffect(() => {
+  api.get("/usuarios/me")
+    .then(res => {
+      setPapel(res.data.papel);
+    })
+    .catch(err => {
+      console.error("Usuário não autenticado:", err);
+      window.location.href = "/";
+    });
+}, []);
 
-    if (token) {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      setPapel(payload.papel);
-    }
-  }, []);
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow">
       <div className="container">
@@ -56,6 +60,16 @@ export default function Header() {
             {papel === 0 && (
               <li className="nav-item">
                 <Link className="nav-link text-white" to="/ListarUsuarios">Usuários</Link>
+              </li>
+            )}
+                        {papel === 1 && (
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/ListarClinicas">Clinicas</Link>
+              </li>
+            )}
+            {papel === 0 && (
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/ListarClinicas">Clinicas</Link>
               </li>
             )}
             <li className="nav-item">

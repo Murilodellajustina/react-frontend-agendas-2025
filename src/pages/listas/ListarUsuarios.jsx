@@ -6,32 +6,31 @@ export default function ListarUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
 
   useEffect(() => {
-    const controller = new AbortController(); // 👉 cria o abort controller
-    const token = localStorage.getItem("token");
+    const controller = new AbortController();
 
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
+    api.get("/usuarios/me", { signal: controller.signal })
+      .then((res) => {
+        const { papel } = res.data;
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.papel !== 0 ) {
-      alert("Acesso negado! Apenas administradores podem acessar esta página.");
-      window.location.href = "/PaginaInicialAdm";
-      return;
-    }
+        if (![0, 1, 2].includes(papel)) {
+          alert("Acesso negado!");
+          window.location.href = "/PaginaInicialAdm";
+          return;
+        }
 
-
-    api.get("/usuarios", { signal: controller.signal })
-      .then((res) => setUsuarios(res.data))
+        return api.get("/usuarios", { signal: controller.signal });
+      })
+      .then((res) => {
+        if (res) setUsuarios(res.data);
+      })
       .catch((err) => {
-        if (err.name === "CanceledError") return; // requisição cancelada
-        console.error("Erro ao buscar usuarios:", err);
+        if (err.name !== "CanceledError") {
+          console.error(err);
+          window.location.href = "/";
+        }
       });
 
-    return () => {
-      controller.abort(); // 👉 cancela a requisição ao desmontar o componente
-    };
+    return () => controller.abort();
   }, []);
 
   return (

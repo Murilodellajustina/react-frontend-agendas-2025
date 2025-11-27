@@ -12,26 +12,23 @@ export default function PaginaInicialAdm() {
   const [papel, setPapel] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
+    api.get("/usuarios/me")
+      .then((res) => {
+        const { id, nome, papel } = res.data;
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
+        if (![0, 1, 2].includes(papel)) {
+          alert("Acesso negado!");
+          window.location.href = "/";
+          return;
+        }
 
-    if (payload.papel !== 0 && payload.papel !== 1 && payload.papel !== 2) {
-      alert("Acesso negado! Apenas administradores, funcionários da saúde e clinicas podem acessar esta página.");
-      window.location.href = "/";
-      return;
-    }
-
-
-    setPapel(payload.papel);
-
-    api.get(`/usuarios/${payload.id}`)
-      .then((res) => setNome(res.data.nome))
-      .catch((err) => console.error("Erro ao buscar usuário:", err));
+        setPapel(papel);
+        setNome(nome);
+      })
+      .catch((err) => {
+        console.error("Erro ao buscar usuário:", err);
+        window.location.href = "/";
+      });
   }, []);
 
   return (

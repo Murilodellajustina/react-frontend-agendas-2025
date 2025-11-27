@@ -6,32 +6,31 @@ export default function ListarPacientes() {
   const [paciente, setPacientes] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const controller = new AbortController();
 
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
+    api.get("/usuarios/me", { signal: controller.signal })
+      .then((res) => {
+        const { papel } = res.data;
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.papel !== 0  && payload.papel !== 1) {
-      alert("Acesso negado! Apenas administradores ou funcionarios da saúde podem acessar esta página.");
-      window.location.href = "/PaginaInicialAdm";
-      return;
-    }
+        if (![0, 1, 2].includes(papel)) {
+          alert("Acesso negado!");
+          window.location.href = "/PaginaInicialAdm";
+          return;
+        }
 
-
-    api.get("/paciente", { signal: controller.signal })
-      .then((res) => setPacientes(res.data))
+        return api.get("/paciente", { signal: controller.signal });
+      })
+      .then((res) => {
+        if (res) setPacientes(res.data);
+      })
       .catch((err) => {
-        if (err.name === "CanceledError") return;
-        console.error("Erro ao buscar pacientes:", err);
+        if (err.name !== "CanceledError") {
+          console.error(err);
+          window.location.href = "/";
+        }
       });
 
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, []);
 
   return (

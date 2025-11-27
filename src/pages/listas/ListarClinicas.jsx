@@ -6,34 +6,32 @@ export default function ListarClinicas() {
   const [clinica, setClinicas] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const controller = new AbortController();
+  const controller = new AbortController();
 
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
+  api.get("/usuarios/me", { signal: controller.signal })
+    .then((res) => {
+      const { papel } = res.data;
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.papel !== 0 && payload.papel !== 2) {
-      alert("Acesso negado! Apenas administradores ou clínicas podem acessar esta página.");
-      window.location.href = "/PaginaInicialAdm";
-      return;
-    }
+      if (![0, 1, 2].includes(papel)) {
+        alert("Acesso negado!");
+        window.location.href = "/PaginaInicialAdm";
+        return;
+      }
 
+      return api.get("/clinica", { signal: controller.signal });
+    })
+    .then((res) => {
+      if (res) setClinicas(res.data);
+    })
+    .catch((err) => {
+      if (err.name !== "CanceledError") {
+        console.error(err);
+        window.location.href = "/";
+      }
+    });
 
-    api.get("/clinica", { signal: controller.signal })
-      .then((res) => setClinicas(res.data))
-      .catch((err) => {
-        if (err.name === "CanceledError") return; 
-        console.error("Erro ao buscar clinicas:", err);
-      });
-
-
-  return () => {
-      controller.abort(); 
-    };
-  }, []);
+  return () => controller.abort();
+}, []);
 
   return (
     <Layout>

@@ -7,22 +7,29 @@ export default function CriarUsuario() {
   const [cpf, setCPF] = useState("");
   const [telefone, setTelefone] = useState("");
   const [msg, setMsg] = useState("");
+  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+ useEffect(() => {
+  const controller = new AbortController();
 
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
+  api.get("/usuarios/me", { signal: controller.signal })
+    .then(res => {
+      setUser(res.data);
 
-    const payload = JSON.parse(atob(token.split(".")[1]));
-
-    if (payload.papel !== 0 && payload.papel !== 2) {
-      alert("Acesso negado! Apenas administradores e Funcionarios da saude podem acessar esta página.");
+      if (![0, 1, 2].includes(res.data.papel)) {
+        alert("Acesso negado!");
+        window.location.href = "/PaginaInicialAdm";
+      }
+    })
+    .catch(err => {
+      if (err.name === "CanceledError") return;
+      console.error("Usuário não autenticado:", err);
       window.location.href = "/PaginaInicialAdm";
-    }
-  }, []);
+    });
+
+  return () => controller.abort();
+}, []);
+
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -50,7 +57,7 @@ export default function CriarUsuario() {
 
     } catch (error) {
       console.error(error);
-      setMsg("Erro ao criar clinica.");
+      setMsg("Erro ao criar paciente.");
     }
   }
 

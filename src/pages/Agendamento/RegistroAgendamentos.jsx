@@ -14,37 +14,35 @@ export default function CriarAgendamento() {
   const [msg, setMsg] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const controller = new AbortController();
 
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.papel !== 0 && payload.papel !== 1 && payload.papel !== 2) {
-      alert("Acesso negado! Apenas administradores, clínicas ou pacientes podem acessar esta página.");
-      window.location.href = "/PaginaInicialAdm";
-      return;
-    }
+    api.get("/usuarios/me", { signal: controller.signal })
+      .then(res => {
+        setUser(res.data);
 
-    api.get("/agendamento:id", { signal: controller.signal })
-      .then((res) => setAgendamentos(res.data))
-      .catch((err) => {
-        if (err.name === "CanceledError") return;
-        console.error("Erro ao buscar clinicas:", err);
+        if (![0, 1, 2].includes(res.data.papel)) {
+          alert("Acesso negado!");
+          window.location.href = "/PaginaInicialAdm";
+        }
+      })
+      .catch(err => {
+        console.error("Usuário não autenticado:", err);
+        window.location.href = "/";
       });
 
-    return () => {
-      controller.abort();
-    };
-  }, []);
+    api.get("/clinica", { signal: controller.signal })
+      .then(res => setClinicas(res.data))
+      .catch(err => {
+        if (err.name === "CanceledError") return;
+        console.error("Erro ao buscar clínicas:", err);
+      });
 
+    return () => controller.abort();
+  }, []);
   async function handleSubmit(e) {
     e.preventDefault();
     setMsg("");
 
-    // validações
     if (!data_agenda || !exameOuConsulta || !medico || !clinica_id) {
       setMsg("Preencha todos os campos!");
       return;
@@ -56,12 +54,11 @@ export default function CriarAgendamento() {
     }
 
     try {
-      // montar body com os nomes que o backend espera
       const body = {
         usuarios_id: Number(user.id),
-        Paciente_id: null,
-        ExameOuConsulta: exameOuConsulta,
-        Medico: medico,
+        paciente_id: null,
+        exameouconsulta: exameOuConsulta,
+        medico: medico,
         Clinica_id: Number(clinica_id),
         estado: estado,
         data_agenda: data_agenda

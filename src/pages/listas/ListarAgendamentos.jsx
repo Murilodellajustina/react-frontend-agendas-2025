@@ -9,30 +9,33 @@ export default function ListarAgendamentos() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const controller = new AbortController();
 
-    if (!token) {
-      window.location.href = "/";
-      return;
-    }
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    if (payload.papel !== 0 && payload.papel !== 1 && payload.papel !== 2) {
-      alert("Acesso negado! Apenas administradores, clínicas ou pacientes podem acessar esta página.");
-      window.location.href = "/PaginaInicialAdm";
-      return;
-    }
+    api.get("/usuarios/me", { signal: controller.signal })
+      .then((res) => {
+        const { papel } = res.data;
 
-    api.get("/agendamento", { signal: controller.signal })
-      .then((res) => setAgendamentos(res.data))
+        if (![0, 1, 2].includes(papel)) {
+          alert("Acesso negado!");
+          window.location.href = "/PaginaInicialAdm";
+          return;
+        }
+
+        return api.get("/agendamento", { signal: controller.signal });
+      })
+      .then((res) => {
+        if (res) setAgendamentos(res.data);
+      })
       .catch((err) => {
-        if (err.name === "CanceledError") return;
+        if (err.name !== "CanceledError") {
+          console.error(err);
+          window.location.href = "/";
+        }
       });
 
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, []);
+
 
   return (
     <Layout>
@@ -56,7 +59,7 @@ export default function ListarAgendamentos() {
           <tbody>
             {agendamentos.length === 0 ? (
               <tr>
-                <td colSpan="5" className="text-center">
+                <td colSpan="8" className="text-center">
                   Carregando...
                 </td>
               </tr>
@@ -66,10 +69,10 @@ export default function ListarAgendamentos() {
                   <td>{ag.id}</td>
                   <td>{ag.exameouconsulta}</td>
                   <td>{ag.medico}</td>
-                  <td>{ag.clinica_id}</td>
+                  <td>{ag.clinica_nome}</td>
                   <td>{ag.paciente_nome}</td>
                   <td>{ag.estado}</td>
-                  <td>{ag.data_agenda}</td>
+                  <td>{new Date(ag.data_agenda).toLocaleString()}</td>
                   <td>
                     {ag.estado === "d" && (
                       <button className="btn btn-primary" onClick={() => navigate(`/RegistroAgendamentoUsu/${ag.id}`)}>Agendar</button>

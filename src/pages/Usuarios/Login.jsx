@@ -15,11 +15,21 @@ export default function Login() {
     setErro("");
 
     try {
-      const res = await login(email, senha);
+      await login(email, senha);
 
-      localStorage.setItem("token", res.data.token);
+      const csrf = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("csrf_token="))
+        ?.split("=")[1];
 
-      navigate("/paginaInicialAdm"); 
+      if (!csrf) {
+        setErro("Erro CSRF: cookie não encontrado");
+        return;
+      }
+
+      sessionStorage.setItem("csrf_token", csrf);
+
+      navigate("/paginaInicialAdm");
 
     } catch (err) {
       setErro("Email ou senha incorretos");

@@ -7,26 +7,34 @@ export default function RegistroAgendamentoUsu() {
   const { id } = useParams();
 
   const [agenda, setAgenda] = useState(null);
-  const [pacientes, setPacientes] = useState([]);   
-  const [pacienteSelecionado, setPacienteSelecionado] = useState(""); 
+  const [pacientes, setPacientes] = useState([]);
+  const [pacienteSelecionado, setPacienteSelecionado] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function fetchData() {
       try {
-        const resAgenda = await api.get(`/agendamento/${id}`);
+        const resAgenda = await api.get(`/agendamento/${id}`, { signal: controller.signal });
         setAgenda(resAgenda.data);
 
-        const resPac = await api.get("/paciente");
+        const resPac = await api.get("/paciente", { signal: controller.signal });
         setPacientes(resPac.data);
+
       } catch (err) {
+        if (err.name === "CanceledError") return;
         console.error("Erro ao buscar dados:", err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     }
 
     fetchData();
+
+    return () => controller.abort();
   }, [id]);
+
 
   async function confirmarAgendamento() {
     if (!pacienteSelecionado) {
@@ -36,7 +44,6 @@ export default function RegistroAgendamentoUsu() {
 
     try {
       await api.put(`/agendamento/${id}`, {
-        ...agenda,
         paciente_id: Number(pacienteSelecionado),
         estado: "u"
       });
@@ -45,7 +52,8 @@ export default function RegistroAgendamentoUsu() {
       window.location.href = "/ListarAgendamentos";
 
     } catch (err) {
-      console.error("Erro ao agendar:", err);
+      console.error("ERRO DETALHADO:", err.response?.data);
+      console.error("Erro ao agendar:", err.response?.data || err);
       alert("Erro ao agendar");
     }
   }
@@ -63,7 +71,7 @@ export default function RegistroAgendamentoUsu() {
           <p><strong>ID:</strong> {agenda.id}</p>
           <p><strong>Médico:</strong> {agenda.medico}</p>
           <p><strong>Consulta / Exame:</strong> {agenda.exameouconsulta}</p>
-          <p><strong>Data:</strong> {agenda.data_agenda}</p>
+          <p><strong>Data:</strong> {new Date(agenda.data_agenda).toLocaleString()}</p>
           <p><strong>Estado atual:</strong> {agenda.estado}</p>
 
           <div className="mb-3 mt-4">
