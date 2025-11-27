@@ -77,7 +77,8 @@ useEffect(() => {
                 className="nav-link text-white"
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  localStorage.removeItem("token");
+                  localStorage.removeItem("jwt");
+                  localStorage.removeItem("csrf_token");
                   window.location.href = "/";
                 }}
               >

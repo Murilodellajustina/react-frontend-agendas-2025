@@ -20,7 +20,7 @@ export default function CriarAgendamento() {
       .then(res => {
         setUser(res.data);
 
-        if (![0, 1, 2].includes(res.data.papel)) {
+        if (![0, 2].includes(res.data.papel)) {
           alert("Acesso negado!");
           window.location.href = "/PaginaInicialAdm";
         }

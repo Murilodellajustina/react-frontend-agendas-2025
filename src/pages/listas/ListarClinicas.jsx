@@ -12,7 +12,7 @@ export default function ListarClinicas() {
     .then((res) => {
       const { papel } = res.data;
 
-      if (![0, 1, 2].includes(papel)) {
+      if (![0, 2].includes(papel)) {
         alert("Acesso negado!");
         window.location.href = "/PaginaInicialAdm";
         return;
