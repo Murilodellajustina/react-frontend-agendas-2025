@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: "https://murilodellajustina.github.io/react-frontend-agendas-2025/",
   withCredentials: true,
 });
 
@@ -16,6 +16,6 @@ export function login(email, senha) {
 }
 
 axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://murilodellajustina.github.io/react-frontend-agendas-2025/",
   withCredentials: true   
 });
