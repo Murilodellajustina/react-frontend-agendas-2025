@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
 import { login } from "../../Services/Api";
 import logoImg from "../../Imagens/logo.png";
+import Button from "react-bootstrap/Button";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -82,8 +84,10 @@ export default function Login() {
                 Entrar
                 </button>
             </div>
+            <Button as={Link} to="/RegistroUsuarios" variant="primary">
+              Criar Usuário
+            </Button>
           </form>
-
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://murilodellajustina.github.io/react-frontend-agendas-2025/",
+  baseURL: "https://desenvolvimento-web-2025-hlq6.onrender.com",
   withCredentials: true,
 });
 
@@ -16,6 +16,6 @@ export function login(email, senha) {
 }
 
 axios.create({
-  baseURL: "https://murilodellajustina.github.io/react-frontend-agendas-2025/",
+  baseURL: "https://desenvolvimento-web-2025-hlq6.onrender.com",
   withCredentials: true   
 });
