@@ -2,13 +2,49 @@ import { useState, useEffect } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
 
-export default function CriarUsuario() {
+function formatCEP(valor) {
+    let v = valor.replace(/\D/g, "");
+    if (v.length > 8) v = v.slice(0, 8);
+    if (v.length > 5) {
+        v = v.replace(/(\d{5})(\d{1,3})/, "$1-$2");
+    }
+    return v;
+}
+
+function formatTelefone(valor) {
+    let v = valor.replace(/\D/g, "");
+    if (v.length > 11) v = v.slice(0, 11);
+
+    if (v.length <= 10) {
+        v = v.replace(/(\d{0,2})(\d{0,4})(\d{0,4})/, (_, ddd, p1, p2) => {
+            let out = "";
+            if (ddd) out += `(${ddd}`;
+            if (ddd && ddd.length === 2) out += ") ";
+            if (p1) out += p1;
+            if (p2) out += "-" + p2;
+            return out;
+        });
+    } else {
+        v = v.replace(/(\d{0,2})(\d{0,5})(\d{0,4})/, (_, ddd, p1, p2) => {
+            let out = "";
+            if (ddd) out += `(${ddd}`;
+            if (ddd && ddd.length === 2) out += ") ";
+            if (p1) out += p1;
+            if (p2) out += "-" + p2;
+            return out;
+        });
+    }
+
+    return v;
+}
+
+export default function CriarClinica() {
     const [nome, setNome] = useState("");
     const [cep, setCEP] = useState("");
     const [endereco, setEndereco] = useState("");
     const [telefone, setTelefone] = useState("");
     const [msg, setMsg] = useState("");
-
+    const [ativo, setAtivo] = useState(true);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -40,12 +76,16 @@ export default function CriarUsuario() {
             return;
         }
 
+        const cepSemMascara = cep.replace(/\D/g, "");
+        const telSemMascara = telefone.replace(/\D/g, "");
+
         try {
             await api.post("/clinica", {
                 nome,
-                cep,
+                cep: cepSemMascara,
                 endereco,
-                telefone
+                telefone: telSemMascara,
+                ativo: true
             });
 
             setMsg("Clinica criado com sucesso!");
@@ -85,17 +125,18 @@ export default function CriarUsuario() {
                     <div className="mb-3">
                         <label className="form-label">CEP</label>
                         <input
-                            type="CEP"
+                            type="text"
                             className="form-control"
                             value={cep}
-                            onChange={(e) => setCEP(e.target.value)}
+                            onChange={(e) => setCEP(formatCEP(e.target.value))}
+                            placeholder="00000-000"
                         />
                     </div>
 
                     <div className="mb-3">
                         <label className="form-label">Endereco</label>
                         <input
-                            type="endereco"
+                            type="text"
                             className="form-control"
                             value={endereco}
                             onChange={(e) => setEndereco(e.target.value)}
@@ -105,10 +146,11 @@ export default function CriarUsuario() {
                     <div className="mb-3">
                         <label className="form-label">Telefone</label>
                         <input
-                            type="telefone"
+                            type="text"
                             className="form-control"
                             value={telefone}
-                            onChange={(e) => setTelefone(e.target.value)}
+                            onChange={(e) => setTelefone(formatTelefone(e.target.value))}
+                            placeholder="(00) 00000-0000"
                         />
                     </div>
 

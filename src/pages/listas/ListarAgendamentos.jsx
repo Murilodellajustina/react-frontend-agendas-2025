@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 export default function ListarAgendamentos() {
   const [agendamentos, setAgendamentos] = useState([]);
   const navigate = useNavigate();
+    const [papel, setPapel] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -14,6 +15,7 @@ export default function ListarAgendamentos() {
     api.get("/usuarios/me", { signal: controller.signal })
       .then((res) => {
         const { papel } = res.data;
+        setPapel(papel);
 
         if (![0, 1, 2].includes(papel)) {
           alert("Acesso negado!");
@@ -36,6 +38,22 @@ export default function ListarAgendamentos() {
     return () => controller.abort();
   }, []);
 
+  async function cancelarAgendamento(id) {
+
+    try {
+      await api.put(`/agendamento/${id}`, {
+        paciente_id: null,
+        estado: "d"
+      });
+
+      alert("Cancelado com sucesso!");
+      window.location.href = "/ListarAgendamentos";
+    } catch (err) {
+      console.error("Erro ao cancelar:", err.response?.data || err);
+      alert("Erro ao cancelar agendamento");
+    }
+  }
+
 
   return (
     <Layout>
@@ -50,9 +68,9 @@ export default function ListarAgendamentos() {
               <th>Médico</th>
               <td>Clinica</td>
               <th>Paciente</th>
-              <th>Estado</th>
               <th>Data Agenda</th>
-              <th></th>
+              <th>Agendar</th>
+              <th>Cancelar</th>
             </tr>
           </thead>
 
@@ -71,16 +89,16 @@ export default function ListarAgendamentos() {
                   <td>{ag.medico}</td>
                   <td>{ag.clinica_nome}</td>
                   <td>{ag.paciente_nome}</td>
-                  <td>{ag.estado}</td>
                   <td>{new Date(ag.data_agenda).toLocaleString()}</td>
                   <td>
                     {ag.estado === "d" && (
-                      <button className="btn btn-primary" onClick={() => navigate(`/RegistroAgendamentoUsu/${ag.id}`)}>Agendar</button>
+                      <button className="btn btn-primary" onClick={() => navigate(`/RegistroAgendamentoUsu/${ag.id}`)}disabled={papel === 2}>Agendar</button>
                     )}
                     {ag.estado === "u" && (
                       <span>Indisponível</span>
                     )}
                   </td>
+                  <td><button className="btn btn-danger" onClick={() => cancelarAgendamento(ag.id)}>Cancelar</button></td>
                 </tr>
               ))
             )}

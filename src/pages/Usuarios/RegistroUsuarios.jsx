@@ -10,7 +10,7 @@ export default function CriarUsuario() {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState(null);
 
- useEffect(() => {
+  useEffect(() => {
     const controller = new AbortController();
 
     api.get("/usuarios/me", { signal: controller.signal })
@@ -29,14 +29,19 @@ export default function CriarUsuario() {
 
 
 
-  return () => controller.abort();
-}, []);
+    return () => controller.abort();
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     if (!nome || !email || !senha || papel === "") {
       setMsg("Preencha todos os campos!");
+      return;
+    }
+
+    if (senha.length < 6) {
+      setMsg("A senha deve ter no mínimo 6 caracteres.");
       return;
     }
 

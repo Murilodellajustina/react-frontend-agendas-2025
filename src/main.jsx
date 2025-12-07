@@ -26,6 +26,7 @@ const router = createBrowserRouter([
     { path: "/RegistroClinica", element: <RegistrarClinica /> },
     { path: "/RegistroPaciente", element: <RegistrarPaciente /> },
     { path: "/RegistroAgendamentoUsu/:id", element: <RegistrarAgendamentoUsu /> },
+    
 ]);
 
 createRoot(document.getElementById("root")).render(

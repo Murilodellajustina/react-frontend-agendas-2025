@@ -33,6 +33,7 @@ export default function Login() {
 
     } catch (err) {
       setErro("Email ou senha incorretos");
+      if(senha.length< 6) setErro("A senha deve ter 6 digitos!!");
       console.error(err);
     }
   }

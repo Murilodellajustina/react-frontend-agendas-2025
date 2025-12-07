@@ -2,6 +2,51 @@ import { useState, useEffect } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
 
+function formatCPF(valor) {
+  let v = valor.replace(/\D/g, "");
+
+  if (v.length > 11) v = v.slice(0, 11);
+  
+  if (v.length > 9) {
+    v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, "$1.$2.$3-$4");
+  }
+  else if (v.length > 6) {
+    v = v.replace(/(\d{3})(\d{3})(\d{0,3})/, "$1.$2.$3");
+  }
+  else if (v.length > 3) {
+    v = v.replace(/(\d{3})(\d{0,3})/, "$1.$2");
+  }
+
+  return v;
+}
+
+function formatTelefone(valor) {
+  let v = valor.replace(/\D/g, "");
+  if (v.length > 11) v = v.slice(0, 11);
+
+  if (v.length <= 10) {
+    v = v.replace(/(\d{0,2})(\d{0,4})(\d{0,4})/, (_, ddd, p1, p2) => {
+      let out = "";
+      if (ddd) out += `(${ddd}`;
+      if (ddd && ddd.length === 2) out += ") ";
+      if (p1) out += p1;
+      if (p2) out += "-" + p2;
+      return out;
+    });
+  } else {
+    v = v.replace(/(\d{0,2})(\d{0,5})(\d{0,4})/, (_, ddd, p1, p2) => {
+      let out = "";
+      if (ddd) out += `(${ddd}`;
+      if (ddd && ddd.length === 2) out += ") ";
+      if (p1) out += p1;
+      if (p2) out += "-" + p2;
+      return out;
+    });
+  }
+
+  return v;
+}
+
 export default function CriarUsuario() {
   const [nome, setNome] = useState("");
   const [cpf, setCPF] = useState("");
@@ -9,26 +54,26 @@ export default function CriarUsuario() {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState(null);
 
- useEffect(() => {
-  const controller = new AbortController();
+  useEffect(() => {
+    const controller = new AbortController();
 
-  api.get("/usuarios/me", { signal: controller.signal })
-    .then(res => {
-      setUser(res.data);
+    api.get("/usuarios/me", { signal: controller.signal })
+      .then(res => {
+        setUser(res.data);
 
-      if (![0, 1].includes(res.data.papel)) {
-        alert("Acesso negado!");
+        if (![0, 1].includes(res.data.papel)) {
+          alert("Acesso negado!");
+          window.location.href = "/PaginaInicialAdm";
+        }
+      })
+      .catch(err => {
+        if (err.name === "CanceledError") return;
+        console.error("Usuário não autenticado:", err);
         window.location.href = "/PaginaInicialAdm";
-      }
-    })
-    .catch(err => {
-      if (err.name === "CanceledError") return;
-      console.error("Usuário não autenticado:", err);
-      window.location.href = "/PaginaInicialAdm";
-    });
+      });
 
-  return () => controller.abort();
-}, []);
+    return () => controller.abort();
+  }, []);
 
 
   async function handleSubmit(e) {
@@ -39,11 +84,13 @@ export default function CriarUsuario() {
       return;
     }
 
+    const telSemMascara = telefone.replace(/\D/g, "");
+
     try {
       await api.post("/paciente", {
         nome,
         cpf,
-        telefone
+        telefone: telSemMascara
       });
 
       setMsg("Paciente criado com sucesso!");
@@ -82,20 +129,22 @@ export default function CriarUsuario() {
           <div className="mb-3">
             <label className="form-label">CPF</label>
             <input
-              type="CPF"
+              type="text"
               className="form-control"
               value={cpf}
-              onChange={(e) => setCPF(e.target.value)}
+              onChange={(e) => setCPF(formatCPF(e.target.value))}
+              placeholder="000.000.000-00"
             />
           </div>
 
           <div className="mb-3">
             <label className="form-label">Telefone</label>
             <input
-              type="telefone"
+              type="text"
               className="form-control"
               value={telefone}
-              onChange={(e) => setTelefone(e.target.value)}
+              onChange={(e) => setTelefone(formatTelefone(e.target.value))}
+              placeholder="(00) 00000-0000"
             />
           </div>
 

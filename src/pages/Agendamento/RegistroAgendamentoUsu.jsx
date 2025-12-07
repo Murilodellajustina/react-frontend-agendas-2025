@@ -45,7 +45,7 @@ export default function RegistroAgendamentoUsu() {
     try {
       await api.put(`/agendamento/${id}`, {
         paciente_id: Number(pacienteSelecionado),
-        estado: "u"
+        estado: "u",
       });
 
       alert("Agendamento realizado com sucesso!");

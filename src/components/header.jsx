@@ -6,16 +6,16 @@ import { api } from "../Services/Api";
 export default function Header() {
   const [papel, setPapel] = useState(null);
 
-useEffect(() => {
-  api.get("/usuarios/me")
-    .then(res => {
-      setPapel(res.data.papel);
-    })
-    .catch(err => {
-      console.error("Usuário não autenticado:", err);
-      window.location.href = "/";
-    });
-}, []);
+  useEffect(() => {
+    api.get("/usuarios/me")
+      .then(res => {
+        setPapel(res.data.papel);
+      })
+      .catch(err => {
+        console.error("Usuário não autenticado:", err);
+        window.location.href = "/";
+      });
+  }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow">
@@ -62,7 +62,7 @@ useEffect(() => {
                 <Link className="nav-link text-white" to="/ListarUsuarios">Usuários</Link>
               </li>
             )}
-                        {papel === 1 && (
+            {papel === 1 && (
               <li className="nav-item">
                 <Link className="nav-link text-white" to="/ListarClinicas">Clinicas</Link>
               </li>
@@ -76,9 +76,9 @@ useEffect(() => {
               <a
                 className="nav-link text-white"
                 style={{ cursor: "pointer" }}
-                onClick={() => {
-                  localStorage.removeItem("jwt");
-                  localStorage.removeItem("csrf_token");
+                onClick={async () => {
+                  await api.post("/usuarios/logout", {}, { withCredentials: true });
+
                   window.location.href = "/";
                 }}
               >
