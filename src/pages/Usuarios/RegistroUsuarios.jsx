@@ -10,28 +10,28 @@ export default function CriarUsuario() {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState(null);
 
- /* useEffect(() => {
-    const controller = new AbortController();
-
-    api.get("/usuarios/me", { signal: controller.signal })
-      .then(res => {
-        const usuario = res.data;
-        setUser(usuario);
-
-        if (![0, 3].includes(usuario.papel)) {
-          alert("Acesso negado!");
-          window.location.href = "/PaginaInicialAdm";
-        }
-      })
-      .catch(err => {
-        console.error("Usuário não autenticado:", err);
-        window.location.href = "/PaginaInicialAdm";
-      });
-
-
-
-    return () => controller.abort();
-  }, []);*/
+  /* useEffect(() => {
+     const controller = new AbortController();
+ 
+     api.get("/usuarios/me", { signal: controller.signal })
+       .then(res => {
+         const usuario = res.data;
+         setUser(usuario);
+ 
+         if (![0, 3].includes(usuario.papel)) {
+           alert("Acesso negado!");
+           window.location.href = "/PaginaInicialAdm";
+         }
+       })
+       .catch(err => {
+         console.error("Usuário não autenticado:", err);
+         window.location.href = "/PaginaInicialAdm";
+       });
+ 
+ 
+ 
+     return () => controller.abort();
+   }, []);*/
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -66,8 +66,16 @@ export default function CriarUsuario() {
       }, 1500);
 
     } catch (error) {
-      console.error(error);
-      setMsg("Erro ao criar usuário.");
+      console.error("Erro ao criar usuário:", error);
+
+      // Mostra no console o que o backend mandou
+      console.log("STATUS:", error.response?.status);
+      console.log("DATA:", error.response?.data);
+
+      const msgBackend = error.response?.data?.erro || error.response?.data?.message;
+
+      setMsg(msgBackend || "Erro ao criar usuário.");
+
     }
   }
 
