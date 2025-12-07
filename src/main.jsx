@@ -1,3 +1,4 @@
+import { StrictMode } from "react";
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -22,13 +23,18 @@ const router = createBrowserRouter([
     { path: "/ListarUsuarios", element: <ListarUsuarios /> },
     { path: "/ListarPacientes", element: <ListarPacientes /> },
     { path: "/RegistroUsuarios", element: <RegistrarUsuario /> },
-    { path: "/RegistroAgendamento", element: <RegistrarAgendamento /> },
+    { path: "/", element: <RegistrarAgendamento /> },
     { path: "/RegistroClinica", element: <RegistrarClinica /> },
     { path: "/RegistroPaciente", element: <RegistrarPaciente /> },
     { path: "/RegistroAgendamentoUsu/:id", element: <RegistrarAgendamentoUsu /> },
-    
-]);
+
+],
+    {
+        basename: "/react-frontend-agendas-2025",
+    });
 
 createRoot(document.getElementById("root")).render(
+  <StrictMode>
     <RouterProvider router={router} />
+  </StrictMode>
 );

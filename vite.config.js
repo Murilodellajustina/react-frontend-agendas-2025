@@ -19,5 +19,5 @@ const csp = [
 
 export default defineConfig({
   plugins: [react()],
-  base: "/react-frontend-agendas-2025/", // <= AJUSTE IMPORTANTE
+  base: "/react-frontend-agendas-2025/", 
 });
