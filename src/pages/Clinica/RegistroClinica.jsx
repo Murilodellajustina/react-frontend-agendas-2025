@@ -44,7 +44,6 @@ export default function CriarClinica() {
     const [endereco, setEndereco] = useState("");
     const [telefone, setTelefone] = useState("");
     const [msg, setMsg] = useState("");
-    const [ativo, setAtivo] = useState(true);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
@@ -52,9 +51,10 @@ export default function CriarClinica() {
 
         api.get("/usuarios/me", { signal: controller.signal })
             .then(res => {
-                setUser(res.data);
+                const usuario = res.data;
+                setUser(usuario);
 
-                if (![0, 2].includes(res.data.papel)) {
+                if (![0, 2, 3].includes(usuario.papel)) {
                     alert("Acesso negado!");
                     window.location.href = "/PaginaInicialAdm";
                 }

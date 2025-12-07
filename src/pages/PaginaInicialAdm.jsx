@@ -16,7 +16,7 @@ export default function PaginaInicialAdm() {
       .then((res) => {
         const { id, nome, papel } = res.data;
 
-        if (![0, 1, 2].includes(papel)) {
+        if (![0, 1, 2, 3].includes(papel)) {
           alert("Acesso negado!");
           window.location.href = "/";
           return;
@@ -40,46 +40,29 @@ export default function PaginaInicialAdm() {
       <div className="d-flex justify-content-between align-items-start p-4 gap-4 flex-wrap">
 
         <div className="d-flex flex-column gap-3" style={{ minWidth: "250px" }}>
-          {papel === 0 && (
+          {(papel === 0 || papel === 2 || papel === 3) && (
             <Button as={Link} to="/RegistroAgendamento" variant="primary">
               Criar Agendamento
             </Button>
           )}
-          {papel === 2 && (
-            <Button as={Link} to="/RegistroAgendamento" variant="primary">
-              Criar Agendamento
-            </Button>
-          )}
-
-          {papel === 0 && (
+          {(papel === 0 || papel === 3) && (
             <Button as={Link} to="/RegistroUsuarios" variant="primary">
               Criar Usuário
             </Button>
           )}
 
-          {papel === 0 && (
+          {(papel === 0 || papel === 2 || papel === 3) && (
             <Button as={Link} to="/RegistroClinica" variant="primary">
               Criar Clinica
             </Button>
           )}
 
-          {papel === 2 && (
-            <Button as={Link} to="/RegistroClinica" variant="primary">
-              Criar Clinica
-            </Button>
-          )}
-
-          {papel === 0 && (
+          {(papel === 0 || papel === 1 || papel === 3)&& (
             <Button as={Link} to="/RegistroPaciente" variant="primary">
               Criar Paciente
             </Button>
           )}
 
-          {papel === 1 && (
-            <Button as={Link} to="/RegistroPaciente" variant="primary">
-              Criar Paciente
-            </Button>
-          )}
         </div>
 
         <div style={{ width: "500px", maxWidth: "100%" }}>

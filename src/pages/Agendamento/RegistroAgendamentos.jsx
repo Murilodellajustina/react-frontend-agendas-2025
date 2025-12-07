@@ -18,9 +18,10 @@ export default function CriarAgendamento() {
 
     api.get("/usuarios/me", { signal: controller.signal })
       .then(res => {
-        setUser(res.data);
+        const usuario = res.data;
+        setUser(usuario);
 
-        if (![0, 2].includes(res.data.papel)) {
+        if (![0, 1, 2, 3].includes(usuario.papel)) {
           alert("Acesso negado!");
           window.location.href = "/PaginaInicialAdm";
         }
@@ -127,7 +128,7 @@ export default function CriarAgendamento() {
               onChange={(e) => setClinica_id(e.target.value)}
             >
               <option value="">Selecione uma clínica...</option>
-              {clinicas.map((c) => (
+              {clinicas.filter((c) => c.ativo).map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.nome}
                 </option>

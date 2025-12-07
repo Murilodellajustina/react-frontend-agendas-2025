@@ -6,7 +6,7 @@ function formatCPF(valor) {
   let v = valor.replace(/\D/g, "");
 
   if (v.length > 11) v = v.slice(0, 11);
-  
+
   if (v.length > 9) {
     v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{0,2})/, "$1.$2.$3-$4");
   }
@@ -53,15 +53,17 @@ export default function CriarUsuario() {
   const [telefone, setTelefone] = useState("");
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState(null);
+  const [papel, setPapel] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
 
     api.get("/usuarios/me", { signal: controller.signal })
       .then(res => {
-        setUser(res.data);
+        const usuario = res.data;
+        setUser(usuario);
 
-        if (![0, 1].includes(res.data.papel)) {
+        if (![0, 1, 3].includes(usuario.papel)) {
           alert("Acesso negado!");
           window.location.href = "/PaginaInicialAdm";
         }
@@ -85,12 +87,14 @@ export default function CriarUsuario() {
     }
 
     const telSemMascara = telefone.replace(/\D/g, "");
+    const cpfSemMascara = cpf.replace(/\D/g, "");
 
     try {
       await api.post("/paciente", {
         nome,
-        cpf,
-        telefone: telSemMascara
+        cpf: cpfSemMascara,
+        telefone: telSemMascara,
+        ativo: true
       });
 
       setMsg("Paciente criado com sucesso!");

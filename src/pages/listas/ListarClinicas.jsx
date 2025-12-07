@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
 
+
 export default function ListarClinicas() {
-  const [clinica, setClinicas] = useState([]);
+  const [clinica, setClinicas] = useState([])
+  const [papel, setPapel] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -12,7 +14,9 @@ export default function ListarClinicas() {
       .then((res) => {
         const { papel } = res.data;
 
-        if (![0, 2].includes(papel)) {
+        setPapel(papel);
+
+        if (![0, 2, 3].includes(papel)) {
           alert("Acesso negado!");
           window.location.href = "/PaginaInicialAdm";
           return;
@@ -33,16 +37,30 @@ export default function ListarClinicas() {
     return () => controller.abort();
   }, []);
 
-  async function deletarClinica(id) {
+  async function inativarClinica(id) {
 
     try {
-      await api.patch(`/api/clinica/${id}/ativo`, {
+      await api.patch(`/clinica/${id}/ativo`, {
         ativo: false
       });
       alert("Excluido com sucesso!");
-      window.location.href = "/ListarClinicas";
+      setClinicas((prev) => prev.filter((cl) => cl.id !== id));
     } catch (err) {
       console.error("Erro ao exlcluir!:", err.response?.data || err);
+      alert("Erro ao excluir clinica");
+    }
+  }
+
+  async function ativarClinica(id) {
+
+    try {
+      await api.patch(`/clinica/${id}/ativo`, {
+        ativo: true
+      });
+      alert("Reativada com sucesso!");
+      setClinicas((prev) => prev.filter((cl) => cl.id !== id));
+    } catch (err) {
+      console.error("Erro ao excluir!:", err.response?.data || err);
       alert("Erro ao excluir clinica");
     }
   }
@@ -58,7 +76,7 @@ export default function ListarClinicas() {
               <th>Nome</th>
               <th>Telefone</th>
               <th>Endereço</th>
-              <th>Deletar Clinica</th>
+              <th>Inativar Clinica</th>
             </tr>
           </thead>
 
@@ -69,16 +87,50 @@ export default function ListarClinicas() {
                   Carregando...
                 </td>
               </tr>
+            ) : papel !== 3 ? (
+              clinica.filter((cl) => cl.ativo).map((cl) => (
+                <tr key={cl.id}>
+                  <td>{cl.nome}</td>
+                  <td>{cl.telefone}</td>
+                  <td>{cl.endereco}</td>
+                  <td>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => inativarClinica(cl.id)}
+                      disabled={papel === 2}
+                    >
+                      Inativar
+                    </button>
+                  </td>
+                </tr>
+              ))
             ) : (
               clinica.map((cl) => (
                 <tr key={cl.id}>
                   <td>{cl.nome}</td>
                   <td>{cl.telefone}</td>
                   <td>{cl.endereco}</td>
-                  <td><button className="btn btn-danger" onClick={() => deletarClinica(ag.id)}>Deletar</button></td>
+                  <td>
+                    {cl.ativo ? (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => inativarClinica(cl.id)}
+                      >
+                        Inativar
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => ativarClinica(cl.id)}
+                      >
+                        Ativar
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))
-            )}
+            )
+            }
           </tbody>
         </table>
       </div>

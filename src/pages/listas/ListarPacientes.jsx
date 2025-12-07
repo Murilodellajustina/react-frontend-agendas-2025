@@ -4,6 +4,7 @@ import Layout from "../../components/Layout";
 
 export default function ListarPacientes() {
   const [paciente, setPacientes] = useState([]);
+  const [papel, setPapel] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -11,8 +12,9 @@ export default function ListarPacientes() {
     api.get("/usuarios/me", { signal: controller.signal })
       .then((res) => {
         const { papel } = res.data;
+        setPapel(papel);
 
-        if (![0, 1].includes(papel)) {
+        if (![0, 1, 3].includes(papel)) {
           alert("Acesso negado!");
           window.location.href = "/PaginaInicialAdm";
           return;
@@ -33,6 +35,34 @@ export default function ListarPacientes() {
     return () => controller.abort();
   }, []);
 
+  async function inativarPaciente(id) {
+
+    try {
+      await api.patch(`/paciente/${id}/ativo`, {
+        ativo: false
+      });
+      alert("Excluido com sucesso!");
+      setPacientes((prev) => prev.filter((pct) => pct.id !== id));
+    } catch (err) {
+      console.error("Erro ao exlcluir!:", err.response?.data || err);
+      alert("Erro ao excluir paciente");
+    }
+  }
+
+  async function ativarPaciente(id) {
+
+    try {
+      await api.patch(`/paciente/${id}/ativo`, {
+        ativo: true
+      });
+      alert("Ativado com sucesso!");
+      setPacientes((prev) => prev.filter((pct) => pct.id !== id));
+    } catch (err) {
+      console.error("Erro ao exlcluir!:", err.response?.data || err);
+      alert("Erro ao excluir paciente");
+    }
+  }
+
   return (
     <Layout>
       <div className="container mt-5">
@@ -44,6 +74,7 @@ export default function ListarPacientes() {
               <th>Nome</th>
               <th>Telefone</th>
               <th>CPF</th>
+              <th>Excluir Paciente</th>
             </tr>
           </thead>
 
@@ -54,15 +85,50 @@ export default function ListarPacientes() {
                   Carregando...
                 </td>
               </tr>
+            ) : papel !== 3 ? (
+              paciente.filter((pct) => pct.ativo).map((pct) => (
+                <tr key={pct.id}>
+                  <td>{pct.nome}</td>
+                  <td>{pct.telefone}</td>
+                  <td>{pct.cpf}</td>
+                  <td>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => inativarPaciente(pct.id)}
+                      disabled={papel === 2}
+                    >
+                      Inativar
+                    </button>
+                  </td>
+                </tr>
+              ))
             ) : (
               paciente.map((pct) => (
                 <tr key={pct.id}>
                   <td>{pct.nome}</td>
                   <td>{pct.telefone}</td>
                   <td>{pct.cpf}</td>
+                  <td>
+                    {pct.ativo ? (
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => inativarPaciente(pct.id)}
+                      >
+                        Inativar
+                      </button>
+                    ) : (
+                      <button
+                        className="btn btn-secondary"
+                        onClick={() => ativarPaciente(pct.id)}
+                      >
+                        Ativar
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))
-            )}
+            )
+            }
           </tbody>
         </table>
       </div>

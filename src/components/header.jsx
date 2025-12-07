@@ -47,27 +47,17 @@ export default function Header() {
             <li className="nav-item">
               <Link className="nav-link text-white" to="/ListarAgendamentos">Agendamentos</Link>
             </li>
-            {papel === 0 && (
+            {(papel === 0 || papel === 1 || papel === 3) && (
               <li className="nav-item">
                 <Link className="nav-link text-white" to="/ListarPacientes">Pacientes</Link>
               </li>
             )}
-            {papel === 1 && (
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/ListarPacientes">Pacientes</Link>
-              </li>
-            )}
-            {papel === 0 && (
+            {(papel === 0 || papel === 3) && (
               <li className="nav-item">
                 <Link className="nav-link text-white" to="/ListarUsuarios">Usuários</Link>
               </li>
             )}
-            {papel === 1 && (
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/ListarClinicas">Clinicas</Link>
-              </li>
-            )}
-            {papel === 0 && (
+            {(papel === 0 || papel === 2 || papel === 3)   && (
               <li className="nav-item">
                 <Link className="nav-link text-white" to="/ListarClinicas">Clinicas</Link>
               </li>

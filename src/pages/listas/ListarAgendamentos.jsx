@@ -3,21 +3,24 @@ import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
 import { useNavigate } from "react-router-dom";
 
-
 export default function ListarAgendamentos() {
   const [agendamentos, setAgendamentos] = useState([]);
   const navigate = useNavigate();
-    const [papel, setPapel] = useState(null);
+  const [papel, setPapel] = useState(null);
+  const [usuarioId, setUsuarioId] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
 
-    api.get("/usuarios/me", { signal: controller.signal })
+    api
+      .get("/usuarios/me", { signal: controller.signal })
       .then((res) => {
-        const { papel } = res.data;
-        setPapel(papel);
+        const { papel, id } = res.data;
 
-        if (![0, 1, 2].includes(papel)) {
+        setPapel(papel);
+        setUsuarioId(id);
+
+        if (![0, 1, 2, 3].includes(papel)) {
           alert("Acesso negado!");
           window.location.href = "/PaginaInicialAdm";
           return;
@@ -39,11 +42,10 @@ export default function ListarAgendamentos() {
   }, []);
 
   async function cancelarAgendamento(id) {
-
     try {
       await api.put(`/agendamento/${id}`, {
         paciente_id: null,
-        estado: "d"
+        estado: "d",
       });
 
       alert("Cancelado com sucesso!");
@@ -53,7 +55,6 @@ export default function ListarAgendamentos() {
       alert("Erro ao cancelar agendamento");
     }
   }
-
 
   return (
     <Layout>
@@ -66,7 +67,7 @@ export default function ListarAgendamentos() {
               <th>ID</th>
               <th>Exame / Consulta</th>
               <th>Médico</th>
-              <td>Clinica</td>
+              <th>Clinica</th>
               <th>Paciente</th>
               <th>Data Agenda</th>
               <th>Agendar</th>
@@ -92,13 +93,30 @@ export default function ListarAgendamentos() {
                   <td>{new Date(ag.data_agenda).toLocaleString()}</td>
                   <td>
                     {ag.estado === "d" && (
-                      <button className="btn btn-primary" onClick={() => navigate(`/RegistroAgendamentoUsu/${ag.id}`)}disabled={papel === 2}>Agendar</button>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() =>
+                          navigate(`/RegistroAgendamentoUsu/${ag.id}`)
+                        }
+                        disabled={papel === 2}
+                      >
+                        Agendar
+                      </button>
                     )}
-                    {ag.estado === "u" && (
-                      <span>Indisponível</span>
-                    )}
+                    {ag.estado === "u" && <span>Indisponível</span>}
                   </td>
-                  <td><button className="btn btn-danger" onClick={() => cancelarAgendamento(ag.id)}>Cancelar</button></td>
+                  <td>
+                    {ag.paciente_id !== null &&
+                      (ag.usuarios_id === usuarioId || (papel === 0 || papel === 3)) && (
+                        <button
+                          className="btn btn-danger"
+                          onClick={() => cancelarAgendamento(ag.id)}
+                        >
+                          Cancelar
+                        </button>
+                      )}
+                    {ag.paciente_id === null && <span>--</span>}
+                  </td>
                 </tr>
               ))
             )}

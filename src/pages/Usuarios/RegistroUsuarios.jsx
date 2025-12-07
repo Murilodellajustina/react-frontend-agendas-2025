@@ -15,9 +15,10 @@ export default function CriarUsuario() {
 
     api.get("/usuarios/me", { signal: controller.signal })
       .then(res => {
-        setUser(res.data);
+        const usuario = res.data;
+        setUser(usuario);
 
-        if (![0].includes(res.data.papel)) {
+        if (![0, 3].includes(usuario.papel)) {
           alert("Acesso negado!");
           window.location.href = "/PaginaInicialAdm";
         }
@@ -50,7 +51,8 @@ export default function CriarUsuario() {
         nome,
         email,
         papel: Number(papel),
-        senha
+        senha,
+        ativo: true
       });
 
       setMsg("Usuário criado com sucesso!");

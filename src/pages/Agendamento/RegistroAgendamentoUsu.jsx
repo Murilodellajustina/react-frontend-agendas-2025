@@ -84,7 +84,7 @@ export default function RegistroAgendamentoUsu() {
             >
               <option value="">Escolha um paciente...</option>
 
-              {pacientes.map((p) => (
+              {pacientes.filter((p) => p.ativo).map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.nome}
                 </option>
