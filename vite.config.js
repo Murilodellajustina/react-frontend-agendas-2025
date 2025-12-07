@@ -27,16 +27,6 @@ const csp = [
 ].join("; ");
 
 export default defineConfig({
-    plugins: [react()],
-
-    server: {
-        headers: {
-        },
-    },
-
-    preview: {
-        headers: {
-            "Content-Security-Policy": csp,
-        },
-    },
-});
+  plugins: [react()],
+  base: 'AgendaFácil',
+})
