@@ -31,7 +31,8 @@ const router = createBrowserRouter([
 ],
     {
         basename: "/react-frontend-agendas-2025",
-    });
+    }
+  );
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
