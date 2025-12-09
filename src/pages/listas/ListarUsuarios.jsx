@@ -7,7 +7,7 @@ export default function ListarUsuarios() {
   const [papel, setPapel] = useState(null);
 
 
-  useEffect(() => {
+  /*useEffect(() => {
     const controller = new AbortController();
 
     api.get("/usuarios/me", { signal: controller.signal })
@@ -31,7 +31,7 @@ export default function ListarUsuarios() {
           console.error(err);
           window.location.href = "/";
         }
-      });
+      });*/
 
     return () => controller.abort();
   }, []);
