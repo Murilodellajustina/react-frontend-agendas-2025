@@ -17,7 +17,7 @@ export default function Login() {
     setErro("");
 
     try {
-      await login(email, senha);
+      const res = await login(email, senha);
 
       const csrf = document.cookie
         .split("; ")
