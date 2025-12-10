@@ -118,6 +118,7 @@ export default function CriarUsuario() {
               <option value={0}>Administrador</option>
               <option value={1}>Funcionário da Saúde</option>
               <option value={2}>Clínica</option>
+              <option value={3}>Master</option>
             </select>
           </div>
 

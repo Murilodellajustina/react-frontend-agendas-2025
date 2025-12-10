@@ -23,12 +23,12 @@ export default function CriarAgendamento() {
 
         if (![0, 1, 2, 3].includes(usuario.papel)) {
           alert("Acesso negado!");
-          window.location.href = "/PaginaInicialAdm";
+          (window.location.href = `${import.meta.env.BASE_URL}PaginaInicialAdm`);
         }
       })
       .catch(err => {
         console.error("Usuário não autenticado:", err);
-        window.location.href = "/";
+        (window.location.href = `${import.meta.env.BASE_URL}`);
       });
 
     api.get("/clinica", { signal: controller.signal })
@@ -51,7 +51,7 @@ export default function CriarAgendamento() {
 
     if (!user) {
       setMsg("Usuário não autenticado.");
-      return;
+      return;           
     }
 
     try {
@@ -73,7 +73,7 @@ export default function CriarAgendamento() {
       setClinica_id("");
       setData_agenda("");
 
-            setTimeout(() => {
+      setTimeout(() => {
         (window.location.href = `${import.meta.env.BASE_URL}ListarAgendamentos`);
       }, 1500);
     } catch (err) {
