@@ -46,7 +46,7 @@ export default function RegistroAgendamentoUsu() {
     console.log("Paciente selecionado:", pacienteSelecionado);
 
     try {
-      await api.patch(`/agendamento/${id}`, {
+      await api.put(`/agendamento/${id}`, {
         paciente_id: Number(pacienteSelecionado),
         estado: "u",
       });
