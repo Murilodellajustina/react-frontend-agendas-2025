@@ -73,7 +73,9 @@ export default function CriarAgendamento() {
       setClinica_id("");
       setData_agenda("");
 
-      setTimeout(() => (window.location.href = "/ListarAgendamentos"), 1200);
+            setTimeout(() => {
+        (window.location.href = `${import.meta.env.BASE_URL}ListarAgendamentos`);
+      }, 1500);
     } catch (err) {
       console.error("Erro ao criar agendamento:", err);
       const servidorMsg = err?.response?.data?.erro || err?.response?.data || err.message;

@@ -62,13 +62,13 @@ export default function CriarUsuario() {
       setSenha("");
 
       setTimeout(() => {
-        window.location.href = "/ListarUsuarios";
+        (window.location.href = `${import.meta.env.BASE_URL}ListarUsuarios`);
       }, 1500);
 
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
 
-      // Mostra no console o que o backend mandou
+
       console.log("STATUS:", error.response?.status);
       console.log("DATA:", error.response?.data);
 

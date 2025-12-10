@@ -103,7 +103,7 @@ export default function CriarUsuario() {
       setTelefone("");
 
       setTimeout(() => {
-        window.location.href = "/ListarPacientes";
+        (window.location.href = `${import.meta.env.BASE_URL}ListarPacientes`);
       }, 1500);
 
     } catch (error) {

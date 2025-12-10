@@ -95,7 +95,7 @@ export default function CriarClinica() {
             setTelefone("");
 
             setTimeout(() => {
-                window.location.href = "/ListarClinicas";
+                (window.location.href = `${import.meta.env.BASE_URL}ListarClinicas`);
             }, 1500);
 
         } catch (error) {
