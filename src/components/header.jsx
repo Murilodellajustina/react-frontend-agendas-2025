@@ -58,7 +58,7 @@ export default function Header() {
               </li>
             )}
             {(papel === 0 || papel === 2 || papel === 3)   && (
-              <li className="nav-item">
+              <li className="nav-ite m">
                 <Link className="nav-link text-white" to="/ListarClinicas">Clinicas</Link>
               </li>
             )}
@@ -69,7 +69,7 @@ export default function Header() {
                 onClick={async () => {
                   await api.post("/usuarios/logout", {}, { withCredentials: true });
 
-                  window.location.href = "/";
+                  window.location.href = `${import.meta.env.BASE_URL}`;
                 }}
               >
                 Logout

@@ -18,19 +18,15 @@ export default function Login() {
 
     try {
       const res = await login(email, senha);
+      const csrfFromBody = res.data?.csrfToken;
 
-      const csrf = document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("csrf_token="))
-        ?.split("=")[1];
-
-      if (!csrf) {
-        setErro("Erro CSRF: cookie não encontrado");
+      if (!csrfFromBody) {
+        setErro("Erro CSRF: servidor não retornou token");
         return;
       }
 
       if (res.data?.csrfToken) {
-        sessionStorage.setItem("csrf_token", res.data.csrfToken);
+        sessionStorage.setItem("csrf_token", csrfFromBody);
       }
 
       navigate("/paginaInicialAdm");
