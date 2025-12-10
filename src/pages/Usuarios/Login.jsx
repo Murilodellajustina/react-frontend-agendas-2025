@@ -82,9 +82,6 @@ export default function Login() {
                 Entrar
               </button>
             </div>
-            <Button as={Link} to="/RegistroUsuarios" variant="primary">
-              Criar Usuário
-            </Button>
           </form>
         </div>
       </div>
