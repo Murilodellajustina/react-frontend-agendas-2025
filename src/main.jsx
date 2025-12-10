@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     { path: "/ListarUsuarios", element: <ListarUsuarios /> },
     { path: "/ListarPacientes", element: <ListarPacientes /> },
     { path: "/RegistroUsuarios", element: <RegistrarUsuario /> },
-    { path: "/", element: <RegistrarAgendamento /> },
+    { path: "/RegistroAgendamento", element: <RegistrarAgendamento /> },
     { path: "/RegistroClinica", element: <RegistrarClinica /> },
     { path: "/RegistroPaciente", element: <RegistrarPaciente /> },
     { path: "/RegistroAgendamentoUsu/:id", element: <RegistrarAgendamentoUsu /> },
