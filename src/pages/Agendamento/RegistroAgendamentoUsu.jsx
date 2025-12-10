@@ -10,12 +10,16 @@ export default function RegistroAgendamentoUsu() {
   const [pacientes, setPacientes] = useState([]);
   const [pacienteSelecionado, setPacienteSelecionado] = useState("");
   const [loading, setLoading] = useState(true);
+  const [usuarioLogado, setUsuarioLogado] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
 
     async function fetchData() {
       try {
+        const resMe = await api.get("/usuarios/me", { signal: controller.signal });
+        setUsuarioLogado(resMe.data);
+
         const resAgenda = await api.get(`/agendamento/${id}`, { signal: controller.signal });
         setAgenda(resAgenda.data);
 
@@ -42,13 +46,20 @@ export default function RegistroAgendamentoUsu() {
       return;
     }
 
+    if (!usuarioLogado) {
+      alert("Erro ao identificar o usuário logado.");
+      return;
+    }
+
     console.log("ID do agendamento:", id);
     console.log("Paciente selecionado:", pacienteSelecionado);
+    console.log("Usuário logado:", usuarioLogado);
 
     try {
       await api.put(`/agendamento/${id}`, {
         paciente_id: Number(pacienteSelecionado),
         estado: "u",
+        usuarios_id: usuarioLogado.id,
       });
 
       alert("Agendamento realizado com sucesso!");
