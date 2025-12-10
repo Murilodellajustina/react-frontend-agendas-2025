@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import { login } from "../../Services/Api";
 import logoImg from "../../Imagens/logo.png";
 import Button from "react-bootstrap/Button";
@@ -9,8 +9,8 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
-  
-  const navigate = useNavigate(); 
+
+  const navigate = useNavigate();
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -29,13 +29,15 @@ export default function Login() {
         return;
       }
 
-      sessionStorage.setItem("csrf_token", csrf);
+      if (res.data?.csrfToken) {
+        sessionStorage.setItem("csrf_token", res.data.csrfToken);
+      }
 
       navigate("/paginaInicialAdm");
 
     } catch (err) {
       setErro("Email ou senha incorretos");
-      if(senha.length< 6) setErro("A senha deve ter 6 digitos!!");
+      if (senha.length < 6) setErro("A senha deve ter 6 digitos!!");
       console.error(err);
     }
   }
@@ -44,11 +46,11 @@ export default function Login() {
     <div className="container d-flex justify-content-center align-items-center min-vh-100 bg-light">
       <div className="card shadow-sm" style={{ width: "100%", maxWidth: "400px" }}>
         <div className="card-body p-4">
-          <img 
-            src={logoImg} 
-            alt="Logo" 
-            className="d-block mx-auto mb-4" 
-            style={{ maxWidth: "300px" }} 
+          <img
+            src={logoImg}
+            alt="Logo"
+            className="d-block mx-auto mb-4"
+            style={{ maxWidth: "300px" }}
           />
           <h2 className="text-center mb-4">Login</h2>
 
@@ -80,9 +82,9 @@ export default function Login() {
             </div>
 
             <div className="d-grid">
-                <button className="btn btn-primary" type="submit">
+              <button className="btn btn-primary" type="submit">
                 Entrar
-                </button>
+              </button>
             </div>
             <Button as={Link} to="/RegistroUsuarios" variant="primary">
               Criar Usuário
