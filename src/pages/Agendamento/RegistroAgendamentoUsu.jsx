@@ -11,6 +11,7 @@ export default function RegistroAgendamentoUsu() {
   const [pacienteSelecionado, setPacienteSelecionado] = useState("");
   const [loading, setLoading] = useState(true);
   const [usuarioLogado, setUsuarioLogado] = useState(null);
+  const [msg, setMsg] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -42,12 +43,12 @@ export default function RegistroAgendamentoUsu() {
 
   async function confirmarAgendamento() {
     if (!pacienteSelecionado) {
-      alert("Selecione um paciente!");
+      setMsg("Selecione um paciente!");
       return;
     }
 
     if (!usuarioLogado) {
-      alert("Erro ao identificar o usuário logado.");
+      setMsg("Erro ao identificar o usuário logado.");
       return;
     }
 
@@ -62,12 +63,12 @@ export default function RegistroAgendamentoUsu() {
         usuarios_id: usuarioLogado.id,
       });
 
-      alert("Agendamento realizado com sucesso!");
+      setMsg("Agendamento realizado com sucesso!");
 
     } catch (err) {
       console.error("ERRO DETALHADO:", err.response?.data);
       console.error("Erro ao agendar:", err.response?.data || err);
-      alert("Erro ao agendar");
+      setMsg("Erro ao agendar");
     }
   }
 
@@ -78,7 +79,7 @@ export default function RegistroAgendamentoUsu() {
     <Layout>
       <div className="container mt-5">
         <h2 className="mb-4 text-primary">Agendar Paciente</h2>
-
+        {msg && <div className="alert alert-info">{msg}</div>}
         <div className="card p-4 shadow">
 
           <p><strong>ID:</strong> {agenda.id}</p>

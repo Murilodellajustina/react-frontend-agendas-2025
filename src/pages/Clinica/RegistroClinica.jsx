@@ -94,9 +94,7 @@ export default function CriarClinica() {
             setEndereco("");
             setTelefone("");
 
-            setTimeout(() => {
-                (window.location.href = `${import.meta.env.BASE_URL}ListarClinicas`);
-            }, 1500);
+ 
 
         } catch (error) {
             console.error(error);
