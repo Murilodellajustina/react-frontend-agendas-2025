@@ -61,10 +61,6 @@ export default function CriarUsuario() {
       setPapel("");
       setSenha("");
 
-      setTimeout(() => {
-        (window.location.href = `${import.meta.env.BASE_URL}ListarUsuarios`);
-      }, 1500);
-
     } catch (error) {
       console.error("Erro ao criar usuário:", error);
 
@@ -118,7 +114,6 @@ export default function CriarUsuario() {
               <option value={0}>Administrador</option>
               <option value={1}>Funcionário da Saúde</option>
               <option value={2}>Clínica</option>
-              <option value={3}>Master</option>
             </select>
           </div>
 

@@ -63,7 +63,6 @@ export default function RegistroAgendamentoUsu() {
       });
 
       alert("Agendamento realizado com sucesso!");
-      (window.location.href = `${import.meta.env.BASE_URL}ListarAgendamentos`);
 
     } catch (err) {
       console.error("ERRO DETALHADO:", err.response?.data);

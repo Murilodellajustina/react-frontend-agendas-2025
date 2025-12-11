@@ -102,9 +102,6 @@ export default function CriarUsuario() {
       setCPF("");
       setTelefone("");
 
-      setTimeout(() => {
-        (window.location.href = `${import.meta.env.BASE_URL}ListarPacientes`);
-      }, 1500);
 
     } catch (error) {
       console.error(error);

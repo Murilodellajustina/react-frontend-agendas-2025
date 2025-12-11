@@ -23,7 +23,7 @@ export default function CriarAgendamento() {
 
         if (![0, 1, 2, 3].includes(usuario.papel)) {
           alert("Acesso negado!");
-          (window.location.href = `${import.meta.env.BASE_URL}PaginaInicialAdm`);
+          (window.location.href = `${import.meta.env.BASE_URL}`);
         }
       })
       .catch(err => {
@@ -72,10 +72,8 @@ export default function CriarAgendamento() {
       setMedico("");
       setClinica_id("");
       setData_agenda("");
+      setEstado("d");
 
-      setTimeout(() => {
-        (window.location.href = `${import.meta.env.BASE_URL}ListarAgendamentos`);
-      }, 1500);
     } catch (err) {
       console.error("Erro ao criar agendamento:", err);
       const servidorMsg = err?.response?.data?.erro || err?.response?.data || err.message;
@@ -138,12 +136,6 @@ export default function CriarAgendamento() {
             </select>
           </div>
 
-          <div className="mb-3">
-            <label className="form-label">Estado</label>
-            <select className="form-select" value={estado} onChange={e => setEstado(e.target.value)}>
-              <option value="d">d</option>
-            </select>
-          </div>
 
           <button className="btn btn-primary w-100" type="submit">
             Criar Agendamento
