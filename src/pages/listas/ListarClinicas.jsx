@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 
 export default function ListarClinicas() {
   const [clinica, setClinicas] = useState([])
   const [papel, setPapel] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -18,7 +20,7 @@ export default function ListarClinicas() {
 
         if (![0, 2, 3].includes(papel)) {
           alert("Acesso negado!");
-          window.location.href = "/PaginaInicialAdm";
+          navigate("/PaginaInicialAdm");
           return;
         }
 
@@ -30,7 +32,7 @@ export default function ListarClinicas() {
       .catch((err) => {
         if (err.name !== "CanceledError") {
           console.error(err);
-          window.location.href = "/";
+          navigate("/");
         }
       });
 
@@ -45,6 +47,7 @@ export default function ListarClinicas() {
       });
       alert("Excluido com sucesso!");
       setClinicas((prev) => prev.filter((cl) => cl.id !== id));
+      navigate("/ListarClinicas");
     } catch (err) {
       console.error("Erro ao exlcluir!:", err.response?.data || err);
       alert("Erro ao excluir clinica");
@@ -61,7 +64,7 @@ export default function ListarClinicas() {
       setClinicas((prev) => prev.filter((cl) => cl.id !== id));
     } catch (err) {
       console.error("Erro ao excluir!:", err.response?.data || err);
-      alert("Erro ao excluir clinica");
+      alert("Erro ao ativar clinica");
     }
   }
 

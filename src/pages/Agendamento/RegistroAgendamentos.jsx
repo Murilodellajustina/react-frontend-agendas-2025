@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 export default function CriarAgendamento() {
   const [clinicas, setClinicas] = useState([]);
   const [user, setUser] = useState(null);
-
+  const navigate = useNavigate();
   const [data_agenda, setData_agenda] = useState("");
   const [exameOuConsulta, setExameOuConsulta] = useState("");
   const [medico, setMedico] = useState("");
@@ -23,12 +24,12 @@ export default function CriarAgendamento() {
 
         if (![0, 1, 2, 3].includes(usuario.papel)) {
           alert("Acesso negado!");
-          (window.location.href = `${import.meta.env.BASE_URL}`);
+          navigate("/");
         }
       })
       .catch(err => {
         console.error("Usuário não autenticado:", err);
-        (window.location.href = `${import.meta.env.BASE_URL}`);
+        navigate("/");
       });
 
     api.get("/clinica", { signal: controller.signal })
@@ -73,6 +74,7 @@ export default function CriarAgendamento() {
       setClinica_id("");
       setData_agenda("");
       setEstado("d");
+      navigate("/ListarAgendamentos");
 
     } catch (err) {
       console.error("Erro ao criar agendamento:", err);

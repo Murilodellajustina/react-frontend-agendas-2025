@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 function formatCEP(valor) {
     let v = valor.replace(/\D/g, "");
@@ -45,6 +46,7 @@ export default function CriarClinica() {
     const [telefone, setTelefone] = useState("");
     const [msg, setMsg] = useState("");
     const [user, setUser] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const controller = new AbortController();
@@ -56,13 +58,13 @@ export default function CriarClinica() {
 
                 if (![0, 2, 3].includes(usuario.papel)) {
                     alert("Acesso negado!");
-                    window.location.href = "/PaginaInicialAdm";
+                    navigate("/PaginaInicialAdm");
                 }
             })
             .catch(err => {
                 if (err.name === "CanceledError") return;
                 console.error("Usuário não autenticado:", err);
-                window.location.href = "/PaginaInicialAdm";
+                navigate("/PaginaInicialAdm");
             });
 
         return () => controller.abort();
@@ -93,8 +95,8 @@ export default function CriarClinica() {
             setCEP("");
             setEndereco("");
             setTelefone("");
+            navigate("/ListarClinicas");
 
- 
 
         } catch (error) {
             console.error(error);

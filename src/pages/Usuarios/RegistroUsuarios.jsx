@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 export default function CriarUsuario() {
   const [nome, setNome] = useState("");
@@ -9,6 +10,7 @@ export default function CriarUsuario() {
   const [senha, setSenha] = useState("");
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
    useEffect(() => {
      const controller = new AbortController();
@@ -20,12 +22,12 @@ export default function CriarUsuario() {
  
          if (![0, 3].includes(usuario.papel)) {
            alert("Acesso negado!");
-           window.location.href = "/PaginaInicialAdm";
+           navigate("/PaginaInicialAdm");
          }
        })
        .catch(err => {
          console.error("Usuário não autenticado:", err);
-         window.location.href = "/PaginaInicialAdm";
+         navigate("/");
        });
  
  
@@ -60,6 +62,7 @@ export default function CriarUsuario() {
       setEmail("");
       setPapel("");
       setSenha("");
+      navigate("/ListarUsuarios");
 
     } catch (error) {
       console.error("Erro ao criar usuário:", error);

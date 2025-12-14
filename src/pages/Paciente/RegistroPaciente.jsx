@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 function formatCPF(valor) {
   let v = valor.replace(/\D/g, "");
@@ -54,6 +55,7 @@ export default function CriarUsuario() {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState(null);
   const [papel, setPapel] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -65,13 +67,13 @@ export default function CriarUsuario() {
 
         if (![0, 1, 3].includes(usuario.papel)) {
           alert("Acesso negado!");
-          window.location.href = "/PaginaInicialAdm";
+          navigate("/PaginaInicialAdm");
         }
       })
       .catch(err => {
         if (err.name === "CanceledError") return;
         console.error("Usuário não autenticado:", err);
-        window.location.href = "/PaginaInicialAdm";
+        navigate("/");  
       });
 
     return () => controller.abort();
@@ -101,7 +103,7 @@ export default function CriarUsuario() {
       setNome("");
       setCPF("");
       setTelefone("");
-
+      navigate("/ListarPacientes");
 
     } catch (error) {
       console.error(error);

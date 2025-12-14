@@ -2,10 +2,11 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { api } from "../../Services/Api";
 import Layout from "../../components/Layout";
+import { useNavigate } from "react-router-dom";
 
 export default function RegistroAgendamentoUsu() {
   const { id } = useParams();
-
+  const navigate = useNavigate();
   const [agenda, setAgenda] = useState(null);
   const [pacientes, setPacientes] = useState([]);
   const [pacienteSelecionado, setPacienteSelecionado] = useState("");
@@ -64,6 +65,7 @@ export default function RegistroAgendamentoUsu() {
       });
 
       setMsg("Agendamento realizado com sucesso!");
+      navigate("/ListarAgendamentos");
 
     } catch (err) {
       console.error("ERRO DETALHADO:", err.response?.data);

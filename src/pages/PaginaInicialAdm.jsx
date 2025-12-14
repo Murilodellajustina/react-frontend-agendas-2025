@@ -6,10 +6,12 @@ import { api } from "../Services/Api";
 import Img1 from "../Imagens/IMG1.png";
 import Img2 from "../Imagens/IMG2.png";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function PaginaInicialAdm() {
   const [nome, setNome] = useState("");
   const [papel, setPapel] = useState(null);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     api.get("/usuarios/me")
@@ -18,7 +20,7 @@ export default function PaginaInicialAdm() {
 
         if (![0, 1, 2, 3].includes(papel)) {
           alert("Acesso negado!");
-          window.location.href = "/";
+          navigate("/PaginaInicialAdm");
           return;
         }
 
@@ -27,7 +29,7 @@ export default function PaginaInicialAdm() {
       })
       .catch((err) => {
         console.error("Erro ao buscar usuário:", err);
-        window.location.href = "/";
+        navigate("/");
       });
   }, []);
 

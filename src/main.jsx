@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createHashRouter, RouterProvider } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from './pages//Usuarios/Login.jsx';
 import ListarAgendamentos from './pages/listas/ListarAgendamentos.jsx';
@@ -15,7 +15,7 @@ import RegistrarPaciente from './pages/Paciente/RegistroPaciente.jsx';
 import RegistrarAgendamentoUsu from './pages/Agendamento/RegistroAgendamentoUsu.jsx'
 
 
-const router = createBrowserRouter([
+const router = createHashRouter([
     { path: "/", element: <Login /> },
     { path: "/ListarAgendamentos", element: <ListarAgendamentos /> },
     { path: "/PaginaInicialAdm", element: <PaginaInicialAdm /> },

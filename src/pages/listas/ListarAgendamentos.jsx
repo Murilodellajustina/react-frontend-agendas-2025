@@ -22,7 +22,7 @@ export default function ListarAgendamentos() {
 
         if (![0, 1, 2, 3].includes(papel)) {
           alert("Acesso negado!");
-          window.location.href = "/PaginaInicialAdm";
+          navigate("/PaginaInicialAdm");
           return;
         }
 
@@ -34,7 +34,7 @@ export default function ListarAgendamentos() {
       .catch((err) => {
         if (err.name !== "CanceledError") {
           console.error(err);
-          window.location.href = "/";
+          navigate("/");
         }
       });
 
@@ -50,7 +50,7 @@ export default function ListarAgendamentos() {
       });
 
       alert("Cancelado com sucesso!");
-      window.location.href = "/ListarAgendamentos";
+      navigate("/ListarAgendamentos");
     } catch (err) {
       console.error("Erro ao cancelar:", err.response?.data || err);
       alert("Erro ao cancelar agendamento");
