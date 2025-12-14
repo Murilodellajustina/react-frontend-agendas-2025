@@ -29,9 +29,6 @@ const router = createHashRouter([
     { path: "/RegistroAgendamentoUsu/:id", element: <RegistrarAgendamentoUsu /> },
 
 ],
-    {
-        basename: "/react-frontend-agendas-2025",
-    }
   );
 
 createRoot(document.getElementById("root")).render(
