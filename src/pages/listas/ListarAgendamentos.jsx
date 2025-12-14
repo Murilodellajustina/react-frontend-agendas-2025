@@ -46,6 +46,7 @@ export default function ListarAgendamentos() {
       await api.put(`/agendamento/${id}`, {
         paciente_id: null,
         estado: "d",
+        usuarios_id: usuarioId,
       });
 
       alert("Cancelado com sucesso!");
